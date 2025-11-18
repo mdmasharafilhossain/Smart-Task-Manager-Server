@@ -1,5 +1,5 @@
 import { ObjectId } from "mongodb";
-import { getProjectsCollection, getTeamsCollection, initDB } from "../../config/db";
+import { getProjectsCollection, getTeamsCollection, initDB } from "../../config/db.js";
 
 
 export async function createProject(ownerId, { name, teamId }) {

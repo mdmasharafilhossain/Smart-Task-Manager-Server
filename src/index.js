@@ -1,4 +1,3 @@
-// server/src/index.js
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
@@ -13,17 +12,19 @@ process.on("uncaughtException", (err) => {
 process.on("unhandledRejection", (reason, p) => {
   console.error("UNHANDLED REJECTION at Promise:", p, "reason:", reason);
 });
-// import other routes...
+
 import authRoutes from './modules/auth/auth.routes.js'
-const PORT = process.env.PORT || 4000;
+import teamRoutes from './modules/team/team.routes.js'
+import projectRoutes from './modules/project/project.routes.js'
+import taskRoutes from './modules/task/task.routes.js'
+import dashboardRoutes from './modules/dashboard/dashboard.routes.js'
+const PORT = process.env.PORT || 5005;
 
 async function start() {
   try {
-    await initDB(); // IMPORTANT: ensure DB ready
+    await initDB(); 
 
-    // parse JSON body
-
-    // request logger
+   
     app.use((req, res, next) => {
       console.log(new Date().toISOString(), req.method, req.url);
       if (req.method !== "GET") console.log("body:", req.body);
@@ -31,12 +32,12 @@ async function start() {
     });
 
     app.use("/api/auth", authRoutes);
-    // app.use("/api/teams", teamRoutes);
-    // app.use("/api/projects", projectRoutes);
-    // app.use("/api/tasks", taskRoutes);
-    // app.use("/api/dashboard", dashboardRoutes);
+    app.use("/api/teams", teamRoutes);
+    app.use("/api/projects", projectRoutes);
+    app.use("/api/tasks", taskRoutes);
+    app.use("/api/dashboard", dashboardRoutes);
 
-    // generic error handler
+  
     app.use((err, req, res, next) => {
       console.error("Unhandled error:", err);
       res.status(500).json({ message: err.message || "Internal Server Error" });
