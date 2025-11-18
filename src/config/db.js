@@ -1,9 +1,14 @@
-const dotenv = require('dotenv');
+// server/src/config/db.js
+import dotenv from "dotenv";
 dotenv.config();
 
-const { MongoClient, ServerApiVersion } = require('mongodb');
+import { MongoClient, ServerApiVersion } from "mongodb";
 
 const MONGO_DB_URL = process.env.DB_URL;
+if (!MONGO_DB_URL) {
+  console.error("DB_URL is not defined in .env");
+  process.exit(1);
+}
 
 const client = new MongoClient(MONGO_DB_URL, {
   serverApi: {
@@ -11,7 +16,6 @@ const client = new MongoClient(MONGO_DB_URL, {
     strict: true,
     deprecationErrors: true,
   },
-
 });
 
 let Users = null;
@@ -21,18 +25,16 @@ let Tasks = null;
 let Activity = null;
 let _dbInstance = null;
 
-async function initDB() {
+export async function initDB() {
   if (!client) throw new Error("MongoClient not created");
-  
   if (_dbInstance && Users && Teams && Projects && Tasks && Activity) return;
 
-  
   await client.connect();
+  // ping optional (after connect)
+  await client.db("admin").command({ ping: 1 });
 
- 
-  const db = client.db("smart_task_manager"); 
+  const db = client.db("smart_task_manager");
   _dbInstance = db;
-
 
   Users = db.collection("users");
   Teams = db.collection("teams");
@@ -40,46 +42,40 @@ async function initDB() {
   Tasks = db.collection("tasks");
   Activity = db.collection("activity");
 
-
-  try {
-    await Users.createIndex({ email: 1 }, { unique: true });
-  } catch (e) {}
-
+  try { await Users.createIndex({ email: 1 }, { unique: true }); } catch (e) { /* ignore */ }
   try {
     await Tasks.createIndex({ projectId: 1 });
     await Tasks.createIndex({ assigneeId: 1 });
     await Tasks.createIndex({ teamId: 1 });
-  } catch (e) {}
+  } catch (e) { /* ignore */ }
 
-
-  await db.command({ ping: 1 });
-  console.log("Connected to MongoDB Succesfully...");
+  console.log("Connected to MongoDB successfully.");
 }
 
-function getUsersCollection() {
+export function getUsersCollection() {
   if (!Users) throw new Error("Database not initialized. Call initDB() first.");
   return Users;
 }
-function getTeamsCollection() {
+export function getTeamsCollection() {
   if (!Teams) throw new Error("Database not initialized. Call initDB() first.");
   return Teams;
 }
-function getProjectsCollection() {
+export function getProjectsCollection() {
   if (!Projects) throw new Error("Database not initialized. Call initDB() first.");
   return Projects;
 }
-function getTasksCollection() {
+export function getTasksCollection() {
   if (!Tasks) throw new Error("Database not initialized. Call initDB() first.");
   return Tasks;
 }
-function getActivityCollection() {
+export function getActivityCollection() {
   if (!Activity) throw new Error("Database not initialized. Call initDB() first.");
   return Activity;
 }
 
-async function closeDB() {
+export async function closeDB() {
   try {
-    // await client.close();
+    await client.close();
     Users = Teams = Projects = Tasks = Activity = null;
     _dbInstance = null;
     console.log("MongoDB connection closed.");
@@ -87,14 +83,3 @@ async function closeDB() {
     console.warn("Error closing MongoDB connection:", e);
   }
 }
-
-module.exports = {
-  client,
-  initDB,
-  closeDB,
-  getUsersCollection,
-  getTeamsCollection,
-  getProjectsCollection,
-  getTasksCollection,
-  getActivityCollection,
-};
