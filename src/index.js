@@ -1,9 +1,11 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
+import cookieParser from "cookie-parser";
 import { initDB } from "./config/db.js";
 dotenv.config();
 const app = express();
+app.use(cookieParser());
     app.use(cors({
         origin: "http://localhost:5173",           // or your frontend origin
   credentials: true,
@@ -25,14 +27,19 @@ const PORT = process.env.PORT || 5005;
 
 async function start() {
   try {
+    app.use((req, res, next) => {
+  console.log(new Date().toISOString(), req.method, req.url, "auth-header:", req.headers.authorization, "cookie:", req.headers.cookie);
+  if (req.method !== "GET") console.log("body:", req.body);
+  next();
+});
     await initDB(); 
 
    
-    app.use((req, res, next) => {
-      console.log(new Date().toISOString(), req.method, req.url);
-      if (req.method !== "GET") console.log("body:", req.body);
-      next();
-    });
+    // app.use((req, res, next) => {
+    //   console.log(new Date().toISOString(), req.method, req.url);
+    //   if (req.method !== "GET") console.log("body:", req.body);
+    //   next();
+    // });
 
     app.use("/api/auth", authRoutes);
     app.use("/api/teams", teamRoutes);
