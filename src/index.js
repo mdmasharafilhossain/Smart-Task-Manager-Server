@@ -4,7 +4,10 @@ import dotenv from "dotenv";
 import { initDB } from "./config/db.js";
 dotenv.config();
 const app = express();
-    app.use(cors());
+    app.use(cors({
+        origin: "http://localhost:5173",           // or your frontend origin
+  credentials: true,
+    }));
     app.use(express.json()); 
 process.on("uncaughtException", (err) => {
   console.error("UNCAUGHT EXCEPTION", err);
