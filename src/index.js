@@ -28,8 +28,8 @@ const PORT = process.env.PORT || 5005;
 async function start() {
   try {
     app.use((req, res, next) => {
-  console.log(new Date().toISOString(), req.method, req.url, "auth-header:", req.headers.authorization, "cookie:", req.headers.cookie);
-  if (req.method !== "GET") console.log("body:", req.body);
+  // console.log(new Date().toISOString(), req.method, req.url, "auth-header:", req.headers.authorization, "cookie:", req.headers.cookie);
+  // if (req.method !== "GET") console.log("body:", req.body);
   next();
 });
     await initDB(); 

@@ -8,7 +8,7 @@ export async function createProject(ownerId, { name, teamId }) {
  const Projects = getProjectsCollection()
   const team = await Teams.findOne({ _id: new ObjectId(teamId), ownerId });
   if (!team) throw new Error("Team not found");
-  const doc = { name, teamId: team._id.toString(), ownerId, createdAt: new Date() };
+  const doc = { name, teamId: team._id.toString(),teamName:team.name, ownerId, createdAt: new Date() };
   const r = await Projects.insertOne(doc);
   return { ...doc, _id: r.insertedId };
 }
