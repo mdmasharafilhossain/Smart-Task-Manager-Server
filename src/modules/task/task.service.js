@@ -98,6 +98,7 @@ export async function listTasks(ownerId, { projectId, assigneeId }) {
     query.projectId = projectId;
   } else {
     query.projectId = { $in: [...projectIds] };
+    
   }
   if (assigneeId === "Unassigned") query.assigneeId = null;
   else if (assigneeId) query.assigneeId = assigneeId;
