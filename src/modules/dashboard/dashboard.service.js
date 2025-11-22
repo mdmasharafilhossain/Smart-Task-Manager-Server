@@ -35,6 +35,7 @@ export async function getDashboard(ownerId) {
     const map = Object.fromEntries(agg.map((a) => [a._id, a.count]));
     teamSummaries.push({
       teamId,
+      ownerId: ownerId,
       teamName: t.name,
       members: t.members.map((m) => ({
         memberId: m._id.toString(),
@@ -45,7 +46,7 @@ export async function getDashboard(ownerId) {
     });
   }
 
-  const recentLogs = await Activity.find({}).sort({ createdAt: -1 }).limit(10).toArray();
+  const recentLogs = await Activity.find({ownerId }).sort({ createdAt: -1 }).limit(10).toArray();
 
   return { totalProjects, totalTasks, teams: teamSummaries, recentLogs };
 }
@@ -157,6 +158,7 @@ if (
 const fromMemberIdLog = (overId === "null" || overId == null) ? null : String(overId);
         const log = {
           teamId,
+          ownerId: ownerId,
           message,
           createdAt: new Date(),
           taskId: String(taskToMove._id),
