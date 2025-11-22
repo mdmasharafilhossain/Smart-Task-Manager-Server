@@ -54,5 +54,8 @@ async function start() {
     process.exit(1);
   }
 }
-
+app.get('/', (req, res) => {
+    res.send('Welcome to Task Manager Server');
+});
 start();
+export default app;
