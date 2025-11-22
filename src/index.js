@@ -28,18 +28,13 @@ const PORT = process.env.PORT || 5005;
 async function start() {
   try {
     app.use((req, res, next) => {
-  // console.log(new Date().toISOString(), req.method, req.url, "auth-header:", req.headers.authorization, "cookie:", req.headers.cookie);
-  // if (req.method !== "GET") console.log("body:", req.body);
+  
   next();
 });
     await initDB(); 
 
    
-    // app.use((req, res, next) => {
-    //   console.log(new Date().toISOString(), req.method, req.url);
-    //   if (req.method !== "GET") console.log("body:", req.body);
-    //   next();
-    // });
+    
 
     app.use("/api/auth", authRoutes);
     app.use("/api/teams", teamRoutes);
@@ -49,13 +44,13 @@ async function start() {
 
   
     app.use((err, req, res, next) => {
-      console.error("Unhandled error:", err);
+      
       res.status(500).json({ message: err.message || "Internal Server Error" });
     });
 
     app.listen(PORT, () => console.log(`Server running at http://localhost:${PORT}`));
   } catch (err) {
-    console.error("Failed to start server:", err);
+   
     process.exit(1);
   }
 }

@@ -1,4 +1,3 @@
-// server/src/config/db.js
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -30,7 +29,7 @@ export async function initDB() {
   if (_dbInstance && Users && Teams && Projects && Tasks && Activity) return;
 
   await client.connect();
-  // ping optional (after connect)
+
   await client.db("admin").command({ ping: 1 });
 
   const db = client.db("smart_task_manager");

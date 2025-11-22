@@ -13,6 +13,7 @@ export async function reassignTasks(req, res) {
   try {
     const moves = await dashboardService.reassignAll(req.user.id);
     res.json({ moves });
+    
   } catch (e) {
     res.status(500).json({ message: e.message || "Failed to reassign" });
   }

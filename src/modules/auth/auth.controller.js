@@ -25,10 +25,10 @@ export async function register(req, res) {
     }
     const { token, user } = await authService.registerUser({ name, email, password });
 
-    // set httpOnly cookie
+ 
     res.cookie(COOKIE_NAME, token, cookieOptions());
 
-    // send user object (no passwordHash)
+    
     return res.json({ user });
   } catch (e) {
     if (e && e.code === 11000) return res.status(409).json({ message: "Email already exists" });
@@ -49,7 +49,7 @@ export async function login(req, res) {
   
     return res.json({ user ,token});
   } catch (e) {
-    console.error("login error:", e);
+  
     return res.status(400).json({ message: e?.message || "Login failed" });
   }
 }
@@ -68,11 +68,11 @@ export async function getMe(req, res) {
   try {
    
     const { id, email } = req.user || {};
-    console.log(req.user);
+   
     if (!id) return res.status(401).json({ message: "Unauthorized" });
     return res.json({ user: { id, email } });
   } catch (e) {
-    console.error("getMe error:", e);
+    
     return res.status(500).json({ message: "Server error" });
   }
 }

@@ -4,11 +4,11 @@ dotenv.config();
 
 export function authRequired(req, res, next) {
   try {
-    // Prefer cookie (httpOnly)
+    
     let token = null;
     if (req.cookies && req.cookies.token) token = req.cookies.token;
 
-    // Fallback to Authorization header
+    
     const header = req.headers.authorization || "";
     if (!token && header.toLowerCase().startsWith("bearer ")) {
       token = header.slice(7).trim();
@@ -25,7 +25,7 @@ export function authRequired(req, res, next) {
       return res.status(401).json({ message: "Unauthorized: invalid token" });
     }
   } catch (err) {
-    console.error("authRequired error:", err);
+  
     return res.status(500).json({ message: "Server error" });
   }
 }
